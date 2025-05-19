@@ -142,7 +142,6 @@ async function handleAllImagesCar() {
 } 
 
 async function downloadImages(urls, destFolder = './src/images') {
-  // Limpa a pasta uma única vez
   if (fs.existsSync(destFolder)) {
     const files = fs.readdirSync(destFolder)
     for (const file of files) {
@@ -152,7 +151,6 @@ async function downloadImages(urls, destFolder = './src/images') {
     fs.mkdirSync(destFolder, { recursive: true })
   }
 
-  // Função auxiliar para baixar uma imagem
   function downloadSingleImage(url) {
     return new Promise((resolve, reject) => {
       const fileName = path.basename(new URL(url).pathname.split('?')[0]) // remove query string
@@ -172,7 +170,6 @@ async function downloadImages(urls, destFolder = './src/images') {
     })
   }
 
-  // Baixa todas as imagens paralelamente
   return Promise.all(urls.map(downloadSingleImage))
 }
 

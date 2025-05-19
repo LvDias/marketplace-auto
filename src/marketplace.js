@@ -90,16 +90,13 @@ export async function handleMarketplace(data) {
 const imageDir = './src/images'
 
 async function handleUploadImages() {
-    // Espera o input[type="file"] estar disponível no DOM
   await page.waitForSelector('input[type="file"]', { timeout: 10000 });
 
-  // Coleta os caminhos das imagens
   const imagePaths = fs
     .readdirSync(imageDir)
     .filter(file => /\.(jpe?g|png|webp)$/i.test(file))
     .map(file => path.resolve(imageDir, file));
 
-  // Seleciona o input e envia os arquivos
   const input = await page.$('input[type="file"]');
   if (!input) {
     throw new Error('❌ Campo de upload não encontrado.');
@@ -111,7 +108,6 @@ async function handleUploadImages() {
 async function handleSelect(label, value) {
   await page.waitForSelector('span', { timeout: 10000 });
 
-  // Passa 'label' para dentro do page.evaluate
   await page.evaluate((labelText) => {
     const spans = [...document.querySelectorAll('span')];
     const target = spans.find(span => span.textContent === labelText);
@@ -120,7 +116,6 @@ async function handleSelect(label, value) {
 
   await new Promise(resolve => setTimeout(resolve, 1000));
 
-  // Passa 'value' também
   await page.evaluate((valueText) => {
     const options = [...document.querySelectorAll('span')];
     const option = options.find(span => span.textContent.includes(valueText));
@@ -198,5 +193,5 @@ function capitalizeWords(text) {
 }
 
 function handleDescriptionCarGPT({ version, year, km, price }) {
-  return `🚗 ${version} – ${year}, super conservado!\n\nRodou ${km} km, motor forte e econômico, pronto pra rodar.\n\nIdeal pra quem busca conforto, força e ótimo custo-benefício. Revisões em dia, documentação ok. Só R$ ${String(Number(price.replace(',00', '').replace(/\D/g, ''))+1000)}!\n\nChama no WhatsApp 👉 18 99799-2122`
+  return `${version} - ${year} ${Number(km.replace(/\D/g, '')) < Number(process.env.MAX_KM) ? `- ${km}` : ""}\n\nIMPECÁVEL E COM CAUTELAR APROVADA\n\nPOSSUI GARANTIA\n\nPEGO SEU CARRO OU MOTO NA TROCA\n\n\PARA MAIORES INFORMAÇÕES ${process.env.NUMBER_PHONE}\n\nPROESTE RENAULT MARILIA`
 }
